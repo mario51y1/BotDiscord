@@ -1,7 +1,23 @@
 //Constantes
 const Discord = require('discord.js')
-const client = new Discord.Client()
 const config = require('./config.json');
+const fs = require('fs');
+
+const client = new Discord.Client();
+
+//command handler
+client.commands = new Discord.Collection();
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    client.commands.set(command.name, command);
+}
+
+//token y prefijo de comandos
+const bot_secret_token = config.token;
+const prefix = config.prefix;
+
 
 //Comprueba que exista la palabra dab
 function isDabing(message){
@@ -23,7 +39,7 @@ client.on('message', (receivedMessage) => {
         })
         receivedMessage.react("💯")
         receivedMessage.react("🔥")
-    }
+    } 
 })
 
 //Cuando esta en el server
@@ -46,6 +62,5 @@ client.on('ready',()=>{
     //generalChannel.send("AQUÍ LLEGA JIIIIIIIIIIIIIIIIIMMY")
 })
 
-bot_secret_token = config.token
 
 client.login(bot_secret_token)
