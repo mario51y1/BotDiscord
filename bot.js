@@ -2,14 +2,14 @@
 // INICIALIZACION
 // **************************
 
-//Constantes
+// Constantes
 const Discord = require('discord.js');
 const config = require('./config.json');
 const fs = require('fs');
 
 const client = new Discord.Client();
 
-//command handler y carga de comandos
+// command handler y carga de comandos
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -19,7 +19,7 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
-//token y prefijo de comandos
+// token y prefijo de comandos
 const bot_secret_token = config.token;
 const prefix = config.prefix;
 
@@ -35,23 +35,26 @@ function isDabing(message) {
 // FUNCIONES AUXILIARES
 // **************************
 
-//Respuesta a comando erróneo
+// Respuesta a comando erróneo
 function comandoErroneo(message) {
     message.reply('Habla español hijo de puta (!aiuda)');
 }
 
-//aiudame
-function responderAyuda(channel, cliente) {
-    let str = 'Mira que guapos los comandos: \n\n';
+// aiudame
+function responderAyuda(channel) {
+    const embed = new Discord.RichEmbed()
+        .setColor('#09FFFF')
+        .setTitle('Comandos');
     for (const file of commandFiles) {
-    
+
         const command = require(`./commands/${file}`);
-        str += command.name + ': ' + command.description + '\n';
+        embed.addField(command.name, command.description);
     }
-    channel.send(str);
+    embed.setFooter('Porque anda que no eres tonto que un puto bot tiene que recordarte lo que puede hacer pero bueno si eres así no te voy a decir yo nada porque suficiente tienes con lo tuyo, saes?');
+    channel.send(embed);
 }
 
-//Función para procesar comandos
+// Función para procesar comandos
 function executeCommand(message) {
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
@@ -60,10 +63,11 @@ function executeCommand(message) {
         comandoErroneo(message);
         return;
     }
-    if(command==='aiuda') {
+    if(command === 'aiuda') {
         responderAyuda(message.channel, client);
         return;
-    }else {
+    }
+else {
         try {
             client.commands.get(command).execute(message, args);
         }
@@ -72,7 +76,7 @@ function executeCommand(message) {
             message.reply('there was an error trying to execute that command!');
         }
     }
-    
+
 }
 
 // **************************
@@ -87,12 +91,12 @@ client.on('message', (receivedMessage) => {
         return;
     }
 
-    //si es un comando
+    // si es un comando
     if (receivedMessage.content.startsWith(prefix)) {
         executeCommand(receivedMessage);
     }
 
-    //si tiene la palabra dab
+    // si tiene la palabra dab
     if(isDabing(receivedMessage.content)) {
         receivedMessage.guild.emojis.forEach(customEmoji => {
             if(customEmoji.name == 'facudab') {
@@ -110,8 +114,8 @@ client.on('ready', ()=> {
     console.log('Connected as ' + client.user.tag);
     client.user.setActivity('with La madre de Facu');
 
-    // LISTING THINGS
     /*
+    // LISTING THINGS
 
     console.log('Servers:');
     client.guilds.forEach((guild) => {
