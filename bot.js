@@ -96,11 +96,12 @@ client.on('message', (receivedMessage) => {
     if(isDabing(receivedMessage.content)) {
         receivedMessage.guild.emojis.forEach(customEmoji => {
             if(customEmoji.name == 'facudab') {
-                receivedMessage.react(customEmoji);
-            }
+                receivedMessage.react(customEmoji)
+                    .then(() => receivedMessage.react('💯'))
+                    .then(() => receivedMessage.react('🔥'))
+                    .catch(() => console.error('Error con emojis'));
+                }
         });
-        receivedMessage.react('💯');
-        receivedMessage.react('🔥');
     }
  });
 
