@@ -2,29 +2,28 @@
 // INICIALIZACION
 // **************************
 
-// Constantes
+// constants
 const Discord = require('discord.js');
 const config = require('./config.json');
 const fs = require('fs');
 
 const client = new Discord.Client();
 
-// command handler y carga de comandos
+// command handler / command load
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
 
-// token y prefijo de comandos
+// gets token and prefix
 const bot_secret_token = config.token;
 const prefix = config.prefix;
 
 
-// Comprueba que exista la palabra dab
+// checks if 'dab' is in the message
 function isDabing(message) {
     if(message.includes('dab')) {
         return true;
@@ -35,7 +34,7 @@ function isDabing(message) {
 // FUNCIONES AUXILIARES
 // **************************
 
-// Respuesta a comando erróneo
+// commmand doesn't exists
 function comandoErroneo(message) {
     message.reply('Habla español hijo de puta (!aiuda)');
 }
@@ -54,7 +53,7 @@ function responderAyuda(channel) {
     channel.send(embed);
 }
 
-// Función para procesar comandos
+// function to process command
 function executeCommand(message) {
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
